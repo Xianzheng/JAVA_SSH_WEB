@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx.xsd">
+	
+	<!-- get properties file=============================== -->
+	<context:property-placeholder location="classpath:jdbc.properties"/>
+	
+	<!-- C3P0 pool configuration=============================== -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="${jdbc.driverClass}"/>
+		<property name="jdbcUrl" value="${jdbc.url}"/>
+		<property name="user" value="${jdbc.username}"/>
+		<property name="password" value="${jdbc.password}"/>
+	</bean>
+	
+	<!-- SessionFactory Configuration-->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<!-- pool injection using c3p0 -->
+		<property name="dataSource" ref="dataSource"/>
+		<!-- Hibernate的 Configuration -->
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				
+			</props>
+		</property>
+		
+		<!-- Load Hibernate mapping file -->
+		<property name="mappingResources">
+			<list>
+				<!-- <value>com/fang/crm/domain/User.hbm.xml</value>
+				<value>com/fang/crm/domain/Customer.hbm.xml</value>
+				<value>com/fang/crm/domain/BaseDict.hbm.xml</value>	
+				<value>com/fang/crm/domain/LinkMan.hbm.xml</value>	 -->
+				<value>mark/fang/platform/domain/Article.hbm.xml</value>
+				<value>mark/fang/platform/domain/User.hbm.xml</value>
+				<value>mark/fang/platform/domain/Media.hbm.xml</value>		
+			</list>
+		</property>
+	</bean>
+	<!-- 
+		Action Bean configuration
+		<bean id="userAction" class="com.fang.crm.web.action.UserAction" scope="prototype">
+			<property name="userService" ref="userService"/>
+		</bean>
+		
+		Service Bean configuration
+		<bean id="userService" class="com.fang.crm.service.impl.UserServiceImpl">
+			<property name="userDao" ref="userDao"/>
+		</bean>
+	
+		DAO Bean configuration
+		<bean id="userDao" class="com.fang.crm.dao.impl.UserDaoImpl">
+			<property name="sessionFactory" ref="sessionFactory"/>
+		</bean> -->
+		
+	<!-- Article Bean config -->
+		<bean id="articleAction" class="mark.fang.platform.web.action.ArticleAction" scope="prototype">
+			<property name="articleService" ref="articleService"/>
+		</bean>
+		
+		<!-- Service Bean configuration -->
+		<bean id="articleService" class="mark.fang.platform.service.impl.ArticleServiceImpl">
+			<property name="articleDao" ref="articleDao"/>
+		</bean>
+	
+		<!-- DAO Bean configuration -->
+		<bean id="articleDao" class="mark.fang.platform.dao.impl.ArticleDaoImpl">
+			<property name="sessionFactory" ref="sessionFactory"/>
+		</bean>
+		
+	<!-- User Bean config -->
+		<bean id="userAction" class="mark.fang.platform.web.action.UserAction" scope="prototype">
+			<property name="userService" ref="userService"/>
+		</bean>
+		
+		<!-- Service Bean configuration -->
+		<bean id="userService" class="mark.fang.platform.service.impl.UserServiceImpl">
+			<property name="userDao" ref="userDao"/>
+		</bean>
+	
+		<!-- DAO Bean configuration -->
+		<bean id="userDao" class="mark.fang.platform.dao.impl.UserDaoImpl">
+			<property name="sessionFactory" ref="sessionFactory"/>
+		</bean>
+		
+	<!-- Media Bean config -->
+		<bean id="mediaAction" class="mark.fang.platform.web.action.MediaAction" scope="prototype">
+			<property name="mediaService" ref="mediaService"/>
+		</bean>
+		
+		<!-- Service Bean configuration -->
+		<bean id="mediaService" class="mark.fang.platform.service.impl.MediaServiceImpl">
+			<property name="mediaDao" ref="mediaDao"/>
+		</bean>
+	
+		<!-- DAO Bean configuration -->
+		<bean id="mediaDao" class="mark.fang.platform.dao.impl.MediaDaoImpl">
+			<property name="sessionFactory" ref="sessionFactory"/>
+		</bean>
+		
+	
+	
+	<!--Transaction Configuration -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	
+	<!-- Opening the annotation-->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+</beans>

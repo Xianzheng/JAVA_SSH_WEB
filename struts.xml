@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<!-- 配置Struts2的常量 -->
+	<constant name="struts.action.extension" value="action"/>
+	<!-- get the max size of a form -->
+	<constant name="struts.multipart.maxSize" value="52428800000"/> <!-- 500M -->
+	<package name="crm" extends="struts-default" namespace="/">
+		<action name="article_*" class="articleAction" method="{1}">
+			<result name="findAll">/jsp/add.jsp</result>
+			<result name="postSuccess" type="redirectAction">article_findAll.action</result>
+			<result name="findByPid" >/jsp/discussion.jsp</result>
+			<result name="deleteThemeSuccess" type="redirectAction">article_findAll.action</result>
+			<result name="input">/jsp/error.jsp</result>
+			<interceptor-ref name="defaultStack">
+				<!-- <param name="fileUpload.maximumSize">5242880</param> --><!-- 5M -->
+				<!-- <param name="fileUpload.allowedExtensions">.doc,.docx,.zip,.pdf,.txt,.jpg,.heic,null</param>  -->
+			</interceptor-ref>
+			
+		</action> 
+			
+		<action name="user_*" class="userAction" method="{1}">
+			<result name="login">/index.jsp</result>
+			<result name= "registFailed">/index.jsp</result>
+			<result name="success" type="redirect">/index.jsp</result>
+			<result name="registSuccess" >/index.jsp</result>
+			<result name="removeSuccess">/index.jsp</result>
+		</action>
+		
+		<action name="media_*" class="mediaAction" method="{1}">
+			<result name="findAllMedia">/jsp/mediaIndex.jsp</result>
+			<result name="playMedia">/jsp/media.jsp</result>
+		</action>
+			
+	</package>
+</struts>
